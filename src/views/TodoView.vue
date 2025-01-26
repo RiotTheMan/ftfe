@@ -1,8 +1,16 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/auth';
+import ChecklistView from '@/views/ChecklistView.vue';
 
+const auth = useAuthStore();
+
+function logout() {
+  auth.logout();
+}
 </script>
 
 <template>
-  <h1 class="text-3xl mb-8">Todo</h1>
-  <p>This is the Todo</p>
+  <div class="flex flex-col items-center min-h-screen bg-gray-100">
+    <ChecklistView />
+  </div>
 </template>
