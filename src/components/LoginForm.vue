@@ -33,7 +33,7 @@ function onSubmit() {
         </div>
         <button class="w-full px-4 py-2 mt-6 text-white bg-black rounded-lg hover:opacity-80" type="submit">Sign In</button>
       </form>
-      <p class="mt-4 text-center text-gray-600">Don't have an account? <a href="#" class="text-indigo-500 hover:underline">Sign up</a></p>
+      <p class="mt-4 text-center text-gray-600">Don't have an account? <a href="/register" class="text-indigo-500 hover:underline">Sign up</a></p>
     </div>
   </div>
 </template>

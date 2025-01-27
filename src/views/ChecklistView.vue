@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import ChecklistItem from '@/components/ChecklistItem.vue';
+import ChecklistItem from '@/components/CheckListItem.vue';
 import { useAuthStore } from '@/stores/auth';
 import '@fortawesome/fontawesome-free/css/all.css';
 
+// Object types
 interface CheckItem {
   id: number;
   description: string;
@@ -22,11 +23,17 @@ interface Checklist {
   user: FluxUser;
 }
 
+// Init Method
+onMounted(fetchChecklists);
+
+// Variables
 const auth = useAuthStore();
 const token = auth.token;
 const checklists = ref<Checklist[]>([]);
 const searchQuery = ref('');
+const error = ref<string | null>(null);
 
+// Methods
 async function fetchChecklists() {
   try {
     const response = await fetch('http://localhost:8080/api/todo/getAllToDoByUser', {
@@ -35,20 +42,24 @@ async function fetchChecklists() {
       },
     });
 
-    console.log(JSON.stringify(response));
-
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
 
     const data = await response.json();
-    checklists.value = data;
-  } catch (error) {
-    console.error('Failed to fetch checklists:', error);
+    console.log('Fetched Data:', data);
+
+    checklists.value = data.map((checklist: any) => ({
+      ...checklist,
+      items: checklist.items ?? [], // Ensure items is always an array
+      user: checklist.user ?? null, // Ensure user exists
+    }));
+  } catch (err) {
+    console.error('Failed to fetch checklists:', err);
+    error.value = 'Failed to fetch checklists';
+    checklists.value = [];
   }
 }
-
-onMounted(fetchChecklists);
 
 const filteredChecklists = computed(() => {
   return checklists.value.filter(checklist =>
@@ -72,15 +83,16 @@ async function addChecklist() {
     }
 
     await fetchChecklists();
-  } catch (error) {
-    console.error('Failed to add checklist:', error);
+  } catch (err) {
+    console.error('Failed to add checklist:', err);
+    error.value = 'Failed to add checklist';
   }
 }
 
-async function updateChecklistTitle(id: number, newTitle: string) {
+async function deleteChecklist(id: number) {
   try {
-    const response = await fetch(`http://localhost:8080/api/todo/updateTodoTitle?id=${id}&title=${newTitle}`, {
-      method: 'PUT',
+    const response = await fetch(`http://localhost:8080/api/todo/deleteTodo?id=${id}`, {
+      method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -91,8 +103,9 @@ async function updateChecklistTitle(id: number, newTitle: string) {
     }
 
     await fetchChecklists();
-  } catch (error) {
-    console.error('Failed to update checklist title:', error);
+  } catch (err) {
+    console.error('Failed to delete checklist:', err);
+    error.value = 'Failed to delete checklist';
   }
 }
 
@@ -115,14 +128,13 @@ function logout() {
       </div>
     </div>
     <div class="mt-4 space-y-2 max-h-96 overflow-y-auto">
-      <ChecklistItem
-        v-for="checklist in filteredChecklists"
-        :key="checklist.id"
-        :id="checklist.id"
-        :title="checklist.title"
-        :checks="checklist.items.length"
-        :onUpdateTitle="updateChecklistTitle"
-      />
+<ChecklistItem
+  v-for="checklist in filteredChecklists"
+  :key="checklist.id"
+  :id="checklist.id"
+  :title="checklist.title"
+  :checks="checklist.items ? checklist.items.length : 0"
+/>
     </div>
   </div>
 </template>

@@ -13,11 +13,18 @@ interface CheckItem {
 const route = useRoute();
 const router = useRouter();
 const checklistId = route.params.id;
+const checklistTitle = ref(route.query.title as string || ''); 
 const auth = useAuthStore();
 const token = auth.token;
 const checkItems = ref<CheckItem[]>([]);
 const searchQuery = ref('');
 const newItemText = ref('');
+
+const newTitle = ref(checklistTitle.value); 
+
+function updateTitle() {
+  console.log('Updating title:', newTitle.value);
+}
 
 async function fetchCheckItems() {
   try {
@@ -114,7 +121,13 @@ function goBack() {
   <div class="w-full max-md p-6 bg-white rounded-2xl shadow-lg">
     <div class="flex items-center justify-between">
       <i @click="goBack" class="fas fa-arrow-left text-gray-900 cursor-pointer hover:text-gray-700"></i>
-      <h2 class="text-2xl font-bold text-center text-gray-900">Item Details</h2>
+      <!-- <input 
+        type="text"
+        v-model="newTitle"
+        @blur="updateTitle"
+        class="border p-2 rounded w-full"
+      > -->
+      <!-- <h2 class="text-2xl font-bold text-center text-gray-900">Item Details</h2> -->
       <i @click="addCheckItem" class="fas fa-plus text-gray-900 cursor-pointer hover:text-gray-700"></i>
     </div>
     <div class="mt-4">
