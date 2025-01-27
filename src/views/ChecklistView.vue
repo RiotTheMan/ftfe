@@ -49,6 +49,8 @@ async function fetchChecklists() {
     const data = await response.json();
     console.log('Fetched Data:', data);
 
+    
+
     checklists.value = data.map((checklist: any) => ({
       ...checklist,
       items: checklist.items ?? [], 
@@ -68,7 +70,7 @@ const filteredChecklists = computed(() => {
 });
 
 async function addChecklist() {
-  const title = 'Click here to Change Title';
+  const title = 'Double click to edit title and items';
 
   try {
     const response = await fetch(`http://localhost:8080/api/todo/createTodo?title=${title}`, {
