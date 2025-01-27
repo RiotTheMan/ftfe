@@ -51,8 +51,8 @@ async function fetchChecklists() {
 
     checklists.value = data.map((checklist: any) => ({
       ...checklist,
-      items: checklist.items ?? [], // Ensure items is always an array
-      user: checklist.user ?? null, // Ensure user exists
+      items: checklist.items ?? [], 
+      user: checklist.user ?? null, 
     }));
   } catch (err) {
     console.error('Failed to fetch checklists:', err);
@@ -133,7 +133,7 @@ function logout() {
   :key="checklist.id"
   :id="checklist.id"
   :title="checklist.title"
-  :checks="checklist.items ? checklist.items.length : 0"
+  :checks="checklist.items.length"
 />
     </div>
   </div>

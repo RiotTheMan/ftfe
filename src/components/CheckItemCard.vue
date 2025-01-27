@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import ChecklistItem from '@/components/ChecklistItem.vue';
+import ChecklistItem from '@/components/CheckListItem.vue';
 import { useAuthStore } from '@/stores/auth';
 import '@fortawesome/fontawesome-free/css/all.css';
 

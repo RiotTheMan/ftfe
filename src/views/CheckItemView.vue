@@ -8,6 +8,7 @@ interface CheckItem {
   id: number;
   description: string;
   completed: boolean;
+  title: string;
 }
 
 const route = useRoute();
@@ -23,7 +24,24 @@ const newItemText = ref('');
 const newTitle = ref(checklistTitle.value); 
 
 function updateTitle() {
-  console.log('Updating title:', newTitle.value);
+  if (newTitle.value !== checklistTitle.value) {
+    fetch(`http://localhost:8080/api/todo/updateTodoTitle?id=${checklistId}&title=${encodeURIComponent(newTitle.value)}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        checklistTitle.value = newTitle.value;
+      })
+      .catch(error => {
+        console.error('Failed to update title:', error);
+      });
+  }
 }
 
 async function fetchCheckItems() {
@@ -57,7 +75,7 @@ async function addCheckItem() {
   const description = 'New Check Item';
 
   try {
-    const response = await fetch(`http://localhost:8080/api/check/create?todoId=${checklistId}&description=${encodeURIComponent(description)}`, {
+    const response = await fetch(`http://localhost:8080/api/check/create?todoId=${checklistId}&description=${description}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -121,12 +139,12 @@ function goBack() {
   <div class="w-full max-md p-6 bg-white rounded-2xl shadow-lg">
     <div class="flex items-center justify-between">
       <i @click="goBack" class="fas fa-arrow-left text-gray-900 cursor-pointer hover:text-gray-700"></i>
-      <!-- <input 
+      <input 
         type="text"
         v-model="newTitle"
         @blur="updateTitle"
         class="border p-2 rounded w-full"
-      > -->
+      >
       <!-- <h2 class="text-2xl font-bold text-center text-gray-900">Item Details</h2> -->
       <i @click="addCheckItem" class="fas fa-plus text-gray-900 cursor-pointer hover:text-gray-700"></i>
     </div>

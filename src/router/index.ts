@@ -27,7 +27,6 @@ const router = createRouter({
       path: '/checklist/:id',
       name: 'CheckItemView',
       component: CheckItemView,
-      router.push({ name: 'CheckItemView', params: { id: String(checklist.id) } });
     },
   ],
 });
